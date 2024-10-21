@@ -3,9 +3,10 @@ import { jwtDecode } from 'jwt-decode'; // Chú ý sửa lại import cho jwtDec
 import { Box, Drawer, List, ListItem, ListItemText, AppBar, Toolbar, Typography, Button } from '@mui/material';
 import axios from 'axios';
 import { ROUTES } from '../../routes';
+import { API_ROUTES } from '../../api';
 
 const drawerWidth = 240;
-
+const API_URL = process.env.REACT_APP_API_URL;
 const AdminLayout = ({ children, setToken }) => {
     const [username, setUsername] = useState('');
 
@@ -22,7 +23,7 @@ const AdminLayout = ({ children, setToken }) => {
 
         try {
             // Gọi API logout
-            await axios.post('http://localhost:8000/api/logout', {}, {
+            await axios.post(`${API_URL}${API_ROUTES.LOGOUT}`, {}, {
                 headers: {
                     Authorization: `Bearer ${token}` // Truyền token trong header
                 }

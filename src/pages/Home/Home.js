@@ -8,7 +8,6 @@ const Home = ({ token, setToken }) => {
         try {
             const decodedToken = jwtDecode(token);
             username = decodedToken.name;
-            console.log(username);
         } catch (error) {
             console.error('Token decoding failed', error);
         }

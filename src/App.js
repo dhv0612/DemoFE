@@ -11,9 +11,24 @@ const App = () => {
   useEffect(() => {
     const savedToken = localStorage.getItem('token');
     if (savedToken) {
+      const tokenParts = savedToken.split('.');
+      if (tokenParts.length === 3) {
+        try {
+          const decoded = jwtDecode(savedToken);
+          setUsername(decoded.name);
+        } catch (error) {
+          console.error('Token không hợp lệ:', error);
+          localStorage.removeItem('token');
+          setToken(null);
+        }
+      } else {
+        console.error('Token không hợp lệ hoặc thiếu:', savedToken);
+        localStorage.removeItem('token');
+        setToken(null);
+      }
       setToken(savedToken);
-      const decoded = jwtDecode(savedToken);
-      setUsername(decoded.name);
+    } else {
+      setToken(null);
     }
     setLoading(false);
   }, []);
@@ -24,7 +39,7 @@ const App = () => {
 
   return (
       <div>
-        <AppRoutes setToken={setToken} username={username} />
+        <AppRoutes token={token} setToken={setToken} username={username} />
       </div>
   );
 };
