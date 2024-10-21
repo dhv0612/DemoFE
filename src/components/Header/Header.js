@@ -12,18 +12,7 @@ const Header = ({ user, setToken }) => {
     };
 
     return (
-        <header className="header">
-            <h1 className="username">{user.name} - {user.email}{}</h1>
-            <div className="dropdown">
-                <button onClick={() => setMenuOpen(!isMenuOpen)} className="dropdown-button">
-                    Menu
-                </button>
-                {isMenuOpen && (
-                    <div className="dropdown-menu">
-                        <button onClick={handleLogout} className="logout-button">Đăng Xuất</button>
-                    </div>
-                )}
-            </div>
+        <header>
         </header>
     );
 };
