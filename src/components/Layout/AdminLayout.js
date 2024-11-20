@@ -1,42 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { jwtDecode } from 'jwt-decode'; // Chú ý sửa lại import cho jwtDecode
 import { Box, Drawer, List, ListItem, ListItemText, AppBar, Toolbar, Typography, Button } from '@mui/material';
-import axios from 'axios';
-import { ROUTES } from '../../routes';
-import { API_ROUTES } from '../../api';
+import { Outlet } from 'react-router-dom'; // Thêm Outlet
 
 const drawerWidth = 240;
-const API_URL = process.env.REACT_APP_API_URL;
-const AdminLayout = ({ children, setToken }) => {
+
+const AdminLayout = ({ setToken }) => {
     const [username, setUsername] = useState('');
 
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (token) {
-            const decodedToken = jwtDecode(token);
-            setUsername(decodedToken.name); // Lấy tên người dùng từ token
+            const decodedToken = JSON.parse(atob(token.split('.')[1]));
+            setUsername(decodedToken.name);
         }
     }, []);
 
-    const handleLogout = async () => {
-        const token = localStorage.getItem('token');
-
-        try {
-            // Gọi API logout
-            await axios.post(`${API_URL}${API_ROUTES.LOGOUT}`, {}, {
-                headers: {
-                    Authorization: `Bearer ${token}` // Truyền token trong header
-                }
-            });
-
-            // Sau khi logout thành công, xóa token và chuyển hướng
-            setToken(null);
-            localStorage.removeItem('token');
-            window.location.href = ROUTES.LOGIN;
-        } catch (error) {
-            console.error("Logout failed", error);
-            // Xử lý lỗi nếu cần, ví dụ: thông báo lỗi cho người dùng
-        }
+    const handleLogout = () => {
+        setToken(null);
+        localStorage.removeItem('token');
+        window.location.href = '/login';
     };
 
     return (
@@ -65,20 +47,21 @@ const AdminLayout = ({ children, setToken }) => {
                 anchor="left"
             >
                 <List>
-                    {['Trang chủ', 'Quản lý giao dịch', 'Quản lý người dùng', 'Báo cáo'].map((text, index) => (
-                        <ListItem button key={text}>
-                            <ListItemText primary={text} />
-                        </ListItem>
-                    ))}
+                    <ListItem button component="a" href="/">
+                        <ListItemText primary="Trang chủ" />
+                    </ListItem>
+                    <ListItem button component="a" href="/customer">
+                        <ListItemText primary="Quản lý khách hàng" />
+                    </ListItem>
                 </List>
             </Drawer>
 
             <Box
                 component="main"
-                sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3, marginLeft: `${drawerWidth}px` }}
+                sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}
             >
                 <Toolbar />
-                {children}
+                <Outlet /> {/* Render các route con */}
             </Box>
         </Box>
     );
