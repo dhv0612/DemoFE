@@ -9,13 +9,9 @@ import CustomerForm from '../pages/Customers/CustomerForm'; // Import CustomerFo
 const AppRoutes = ({ setToken, username }) => {
     const token = localStorage.getItem('token');
 
-    if (!token) {
-        return <Navigate to="/login" />;
-    }
-
     return (
         <Routes>
-            <Route path="/login" element={<Login />} />
+            <Route path="/login" element={<Login setToken={setToken} />} />
             {token && (
                 <Route path="/" element={<AdminLayout setToken={setToken} />}>
                     <Route index element={<Home token={token} setToken={setToken} username={username} />} />
