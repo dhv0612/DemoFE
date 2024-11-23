@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Table, TableBody, TableCell, TableHead, TableRow, Box } from '@mui/material';
-import axios from 'axios';
+import axiosInstance from '../../api/axiosInstance'; // Import axiosInstance
 import { API_ROUTES } from '../../api';
 
 const CustomerList = () => {
@@ -14,7 +14,7 @@ const CustomerList = () => {
 
     const fetchCustomers = async () => {
         try {
-            const response = await axios.get(`${process.env.REACT_APP_API_URL}${API_ROUTES.CUSTOMERS}`);
+            const response = await axiosInstance.get(API_ROUTES.CUSTOMERS);
             setCustomers(response.data);
             setLoading(false);
         } catch (error) {
@@ -24,7 +24,7 @@ const CustomerList = () => {
 
     const handleDelete = async (customerId) => {
         try {
-            await axios.delete(`${process.env.REACT_APP_API_URL}${API_ROUTES.CUSTOMERS}/${customerId}`);
+            await axiosInstance.delete(`${API_ROUTES.CUSTOMERS}/${customerId}`);
             setCustomers(customers.filter(customer => customer.id !== customerId));
         } catch (error) {
             console.error("Delete failed", error);
@@ -50,7 +50,7 @@ const CustomerList = () => {
                         <TableRow key={customer.id}>
                             <TableCell>{customer.name}</TableCell>
                             <TableCell>{customer.email}</TableCell>
-                            <TableCell>{customer.phone}</TableCell>
+                            <TableCell>{customer.phone_number}</TableCell>
                             <TableCell>
                                 <Button href={`/customer/edit/${customer.id}`} color="primary">Sửa</Button>
                                 <Button onClick={() => handleDelete(customer.id)} color="secondary">Xóa</Button>
