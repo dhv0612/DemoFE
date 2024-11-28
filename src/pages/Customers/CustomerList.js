@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Table, TableBody, TableCell, TableHead, TableRow, Box } from '@mui/material';
-import axiosInstance from '../../api/axiosInstance'; // Import axiosInstance
-import { API_ROUTES } from '../../api';
+import customerService from "../../service/customerService";
 
 const CustomerList = () => {
     const [customers, setCustomers] = useState([]);
@@ -14,8 +13,9 @@ const CustomerList = () => {
 
     const fetchCustomers = async () => {
         try {
-            const response = await axiosInstance.get(API_ROUTES.CUSTOMERS);
-            setCustomers(response.data);
+            console.log(1);
+            const response = await customerService.getAllCustomers();
+            setCustomers(response);
             setLoading(false);
         } catch (error) {
             console.error("Failed to fetch customers", error);
@@ -24,7 +24,7 @@ const CustomerList = () => {
 
     const handleDelete = async (customerId) => {
         try {
-            await axiosInstance.delete(`${API_ROUTES.CUSTOMERS}/${customerId}`);
+            await customerService.deleteCustomer({customerId});
             setCustomers(customers.filter(customer => customer.id !== customerId));
         } catch (error) {
             console.error("Delete failed", error);

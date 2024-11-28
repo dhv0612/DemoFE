@@ -1,8 +1,13 @@
-import axiosInstance from './axiosInstance';
+import axiosInstance from '../api/axiosInstance';
 
 const customerService = {
     getAllCustomers: async () => {
         const response = await axiosInstance.get('/customers');
+        return response.data;
+    },
+
+    getCustomer: async (id) => {
+        const response = await axiosInstance.get(`/customers/${id}`);
         return response.data;
     },
 

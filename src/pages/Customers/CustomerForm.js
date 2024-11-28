@@ -3,12 +3,13 @@ import { Box, TextField, Button, Grid, Typography, Paper } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import axiosInstance from '../../api/axiosInstance';
 import { API_ROUTES } from '../../api';
+import customerService from "../../service/customerService";
 
 const CustomerForm = ({ isEditMode = false, customerData = {} }) => {
     const [formData, setFormData] = useState({
         name: customerData.name || '',
         email: customerData.email || '',
-        phone: customerData.phone || '',
+        phone_number: customerData.phone_number || '',
         balance: customerData.balance || '', // Thêm balance vào form data
     });
     const [loading, setLoading] = useState(false);
@@ -25,8 +26,8 @@ const CustomerForm = ({ isEditMode = false, customerData = {} }) => {
     const fetchCustomer = async (id) => {
         setLoading(true);
         try {
-            const response = await axiosInstance.get(`${API_ROUTES.CUSTOMERS}/${id}`);
-            setFormData(response.data);
+            const response = await customerService.getCustomer(id);
+            setFormData(response);
         } catch (error) {
             console.error('Failed to fetch customer data:', error);
         } finally {
@@ -44,11 +45,11 @@ const CustomerForm = ({ isEditMode = false, customerData = {} }) => {
         setLoading(true);
         try {
             if (isEditMode) {
-                await axiosInstance.put(`${API_ROUTES.CUSTOMERS}/${id}`, formData);
+                await customerService.updateCustomer(id, formData);
             } else {
-                await axiosInstance.post(API_ROUTES.CUSTOMERS, formData);
+                await customerService.addCustomer(formData);
             }
-            navigate('/customer'); // Redirect to customer list
+            navigate(API_ROUTES.CUSTOMERS); // Redirect to customer list
         } catch (error) {
             console.error('Failed to submit form:', error);
         } finally {
@@ -97,10 +98,11 @@ const CustomerForm = ({ isEditMode = false, customerData = {} }) => {
                                 <TextField
                                     label="Số điện thoại"
                                     name="phone_number"
-                                    value={formData.phone}
+                                    value={formData.phone_number}
                                     onChange={handleChange}
                                     fullWidth
                                     required
+                                    type="number"
                                     variant="outlined"
                                 />
                             </Grid>
@@ -115,7 +117,7 @@ const CustomerForm = ({ isEditMode = false, customerData = {} }) => {
                                     fullWidth
                                     required
                                     variant="outlined"
-                                    inputProps={{ min: 0 }} // Ngăn nhập số âm
+                                    inputProps={{ min: 0 }}
                                 />
                             </Grid>
 
