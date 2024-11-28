@@ -13,7 +13,6 @@ const CustomerList = () => {
 
     const fetchCustomers = async () => {
         try {
-            console.log(1);
             const response = await customerService.getAllCustomers();
             setCustomers(response);
             setLoading(false);
@@ -24,7 +23,7 @@ const CustomerList = () => {
 
     const handleDelete = async (customerId) => {
         try {
-            await customerService.deleteCustomer({customerId});
+            await customerService.deleteCustomer(customerId);
             setCustomers(customers.filter(customer => customer.id !== customerId));
         } catch (error) {
             console.error("Delete failed", error);
