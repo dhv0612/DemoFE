@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Drawer, List, ListItem, ListItemText, AppBar, Toolbar, Typography, Button } from '@mui/material';
-import { Outlet } from 'react-router-dom'; // Thêm Outlet
+import {Outlet, useNavigate} from 'react-router-dom';
+import {API_ROUTES} from "../../api"; // Thêm Outlet
 
 const drawerWidth = 240;
 
 const AdminLayout = ({ setToken }) => {
     const [username, setUsername] = useState('');
-
+    const navigate = useNavigate();
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (token) {
             const decodedToken = JSON.parse(atob(token.split('.')[1]));
             setUsername(decodedToken.name);
+        } else {
+            navigate(API_ROUTES.LOGIN)
         }
     }, []);
 
